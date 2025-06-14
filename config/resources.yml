@@ -1,0 +1,145 @@
+AppointmentsTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: Appointments
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      - AttributeName: insuredId
+        AttributeType: S
+      
+    KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+
+    GlobalSecondaryIndexes:
+      - IndexName: insuredIdIdx
+        KeySchema:
+          - AttributeName: insuredId
+            KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+
+AppointmentCreatedTopicSns:
+  Type: AWS::SNS::Topic
+  Properties:
+    TopicName: appointment-created-topic
+
+AppointmentConfirmTopicSns:
+  Type: AWS::SNS::Topic
+  Properties:
+    TopicName: appointment-confirm-topic
+
+AppointmentCreatedTopicSubscriptionPE:
+  Type: AWS::SNS::Subscription
+  Properties:
+    TopicArn: !Ref AppointmentCreatedTopicSns
+    Protocol: sqs
+    Endpoint: !GetAtt AppointmentQueuePESqs.Arn
+    FilterPolicy:
+      countryISO:
+        - 'PE'
+
+AppointmentCreatedTopicSubscriptionCL:
+  Type: AWS::SNS::Subscription
+  Properties:
+    TopicArn: !Ref AppointmentCreatedTopicSns
+    Protocol: sqs
+    Endpoint: !GetAtt AppointmentQueueCLSqs.Arn
+    FilterPolicy:
+      countryISO:
+        - 'CL'
+
+AppointmentQueuePESqs:
+  Type: AWS::SQS::Queue
+  Properties:
+    QueueName: appointment-created-queue-pe
+    VisibilityTimeout: 60
+
+AppointmentQueueCLSqs:
+  Type: AWS::SQS::Queue
+  Properties:
+    QueueName: appointment-created-queue-cl
+    VisibilityTimeout: 60
+
+AppointmentQueueSqsCompleted:
+  Type: AWS::SQS::Queue
+  Properties:
+    QueueName: appointment-created-queue-completed
+    VisibilityTimeout: 60
+
+AppointmentQueueSqsPolicy:
+  Type: AWS::SQS::QueuePolicy
+  Properties:
+    Queues:
+      - !Ref AppointmentQueuePESqs
+      - !Ref AppointmentQueueCLSqs
+      - !Ref AppointmentQueueSqsCompleted
+    PolicyDocument:
+      Statement:
+        - Effect: Allow
+          Principal: '*'
+          Action: SQS:SendMessage
+          Resource: 
+            - !GetAtt AppointmentQueuePESqs.Arn
+          Condition:
+            ArnEquals:
+              aws:SourceArn: !Ref AppointmentCreatedTopicSns
+        - Effect: Allow
+          Principal: '*'
+          Action: SQS:SendMessage
+          Resource: 
+            - !GetAtt AppointmentQueueCLSqs.Arn
+          Condition:
+            ArnEquals:
+              aws:SourceArn: !Ref AppointmentCreatedTopicSns
+        - Effect: Allow
+          Principal: 
+            Service: "events.amazonaws.com"
+          Action: "SQS:SendMessage"
+          Resource: 
+            - !GetAtt AppointmentQueueSqsCompleted.Arn
+
+AppointmentConfirmBus:
+  Type: AWS::Events::EventBus
+  Properties:
+    Name: appointment-confirm-bus
+
+EventBridgeRule:
+  Type: AWS::Events::Rule
+  Properties:
+    Name: appointment-confirm-rule
+    EventBusName: !Ref AppointmentConfirmBus
+    EventPattern:
+      source:
+        - "com.reto.appointment"
+      detail-type:
+        - "AppointmentCreated"
+      detail:
+        status:
+          - "completed"
+    Targets:
+      - Arn: !GetAtt AppointmentQueueSqsCompleted.Arn
+        Id: "AppointmentQueueSqsCompletedTarget"
+        RoleArn: !GetAtt EventBridgeToSQSRole.Arn     
+
+EventBridgeToSQSRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: events.amazonaws.com
+          Action: sts:AssumeRole
+    Policies:
+      - PolicyName: AllowSendMessageToSQS
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+              Resource: !GetAtt AppointmentQueueSqsCompleted.Arn

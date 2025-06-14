@@ -1,0 +1,47 @@
+{
+  "name": "reto-indra-node-aaron",
+  "version": "1.0.0",
+  "description": "reto indra node aaron",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "deploy": "npm run build && sls deploy --verbose",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.775.0",
+    "@aws-sdk/client-eventbridge": "^3.796.0",
+    "@aws-sdk/client-sns": "^3.787.0",
+    "@aws-sdk/lib-dynamodb": "^3.775.0",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.0",
+    "serverless-http": "^3.2.0",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.22",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.146",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-ui-express": "^4.1.8",
+    "jest": "^29.7.0",
+    "serverless": "^4.9.1",
+    "serverless-auto-swagger": "^3.1.0",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-offline": "^14.4.0",
+    "serverless-openapi-documentation": "^0.4.0",
+    "serverless-openapi-documenter": "^0.0.113",
+    "supertest": "^7.1.0",
+    "ts-jest": "^29.3.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}

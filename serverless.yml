@@ -1,0 +1,92 @@
+service: reto-indra-node-aaron
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: sa-east-1
+  stage: dev
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+        - dynamodb:BatchGetItem
+        - dynamodb:PutItem
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:BatchWriteItem
+        - dynamodb:DeleteItem
+        - dynamodb:ListTables
+        - dynamodb:Scan
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Appointments
+        - arn:aws:dynamodb:${self:provider.region}:*:table/Appointments/index/insuredIdIdx
+    - Effect: Allow
+      Action:
+        - sns:Publish
+        - sns:GetTopicAttributes
+        - sns:SetTopicAttributes
+        - sns:Subscribe
+        - sns:Unsubscribe
+        - sns:ListSubscriptionsByTopic
+      Resource:
+        - arn:aws:sns:${self:provider.region}:*:appointment-created-topic
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
+        - sqs:SetQueueAttributes
+        - sqs:ListQueues
+      Resource:
+        - arn:aws:sqs:${self:provider.region}:*:appointment-created-queue-pe
+        - arn:aws:sqs:${self:provider.region}:*:appointment-created-queue-cl
+        - arn:aws:sqs:${self:provider.region}:*:appointment-created-queue-completed
+    - Effect: Allow
+      Action:
+        - rds:DescribeDBInstances
+        - rds:Connect
+      Resource:
+        - arn:aws:rds:${self:provider.region}:*:db:mysql-pe
+        - arn:aws:rds:${self:provider.region}:*:db:mysql-cl
+    - Effect: Allow
+      Action:
+        - events:PutEvents
+      Resource: arn:aws:events:${self:provider.region}:*:event-bus/appointment-confirm-bus
+        
+  environment:
+    DYNAMODB_APPOINTMENTS: Appointments
+    SNS_APPOINTMENT_CREATED_TOPIC_ARN: arn:aws:sns:${self:provider.region}:${aws:accountId}:appointment-created-topic
+    EVENT_BUS_NAME: "appointment-confirm-bus"
+    EVENT_SOURCE: "com.reto.appointment"
+    EVENT_DETAIL_TYPE: "AppointmentCreated"
+
+custom:
+  autoswagger:
+    title: "API para generar cita médica de asegurados"
+    apiType: "http"
+    host: "k4nit9jt3h.execute-api.sa-east-1.amazonaws.com"
+    basePath: "/dev"
+    schemes: ["https"]
+    swaggerPath: "swagger"
+    generateSwaggerOnDeploy: true
+    typefiles:
+      - "./src/swagger/appointmentSwagger.ts"
+
+functions: ${file(./config/functions.yml)}
+
+resources:
+  Resources: ${file(./config/resources.yml)}
+
+plugins:
+  - serverless-auto-swagger
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+package:
+  patterns:
+    - 'swagger/**'
+    - 'dist/**'   
+    - 'package.json'       
+    - '!node_modules/**'   
+    - '!test/**'           

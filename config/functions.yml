@@ -1,0 +1,67 @@
+appointment:
+  handler: src/adapters/controllers/appointmentController.handler
+  events:
+    - http:
+        path: appointments
+        method: post
+        summary: "Crear cita médica"
+        description: "Endpoint para programar una nueva cita médica para un paciente asegurado"
+        swaggerTags: ["Appointments"]
+        bodyType: "AppointmentRequest"
+        responseData:
+          201:
+            description: "Cita creada con éxito"
+            bodyType: "AppointmentResponse"
+          400:
+            description: "Datos de entrada no válidos"
+          500:
+            description: "Error interno del servidor"
+        operationId: "createAppointment"
+    - http:
+        path: appointments/{insuredId}
+        method: get
+        summary: "Obtener citas por ID del asegurado"
+        description: "Obtener todas las citas de un asegurado"
+        swaggerTags: ["Appointments"]
+        responseData:
+          200:
+            description: "Lista de citas"
+            bodyType: "AppointmentListResponse"
+          404:
+            description: "No se han encontrado citas para esta asegurado"
+          500:
+            description: "Error interno del servidor"
+        operationId: "getAppointmentsByInsuredId"
+    - sqs:
+          arn:
+            Fn::GetAtt: [AppointmentQueueSqsCompleted, Arn]
+          batchSize: 1
+        
+appointment_pe:
+  handler: src/adapters/controllers/appointmentPeController.handler
+  events:
+    - sqs:
+        arn:
+          Fn::GetAtt: [AppointmentQueuePESqs, Arn]
+        batchSize: 5
+  environment:
+    DB_HOST_PE: ${env:DB_HOST_PE}
+    DB_USERNAME_PE: ${env:DB_USER_PE}
+    DB_PASSWORD_PE: ${env:DB_PASSWORD_PE}
+    DB_NAME_PE: ${env:DB_NAME_PE}
+    DB_PORT_PE: ${env:DB_PORT_PE}
+
+appointment_cl:
+  handler: src/adapters/controllers/appointmentClController.handler
+  events:
+    - sqs:
+        arn:
+          Fn::GetAtt: [AppointmentQueueCLSqs, Arn]
+        batchSize: 5
+  environment:
+    DB_HOST_CL: ${env:DB_HOST_CL}
+    DB_USERNAME_CL: ${env:DB_USER_CL}
+    DB_PASSWORD_CL: ${env:DB_PASSWORD_CL}
+    DB_NAME_CL: ${env:DB_NAME_CL}
+    DB_PORT_CL: ${env:DB_PORT_CL}
+
