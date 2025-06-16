@@ -52,12 +52,12 @@ provider:
     - Effect: Allow
       Action:
         - events:PutEvents
-      Resource: arn:aws:events:${self:provider.region}:*:event-bus/appointment-confirm-bus
+      Resource: arn:aws:events:${self:provider.region}:*:event-bus/appointment-bus-event
         
   environment:
     DYNAMODB_APPOINTMENTS: Appointments
     SNS_APPOINTMENT_CREATED_TOPIC_ARN: arn:aws:sns:${self:provider.region}:${aws:accountId}:appointment-created-topic
-    EVENT_BUS_NAME: "appointment-confirm-bus"
+    EVENT_BUS_NAME: "appointment-bus-event"
     EVENT_SOURCE: "com.reto.appointment"
     EVENT_DETAIL_TYPE: "AppointmentCreated"
 
@@ -65,7 +65,7 @@ custom:
   autoswagger:
     title: "API para generar cita médica de asegurados"
     apiType: "http"
-    host: "k4nit9jt3h.execute-api.sa-east-1.amazonaws.com"
+    host: "2ah9wyzz0l.execute-api.sa-east-1.amazonaws.com"
     basePath: "/dev"
     schemes: ["https"]
     swaggerPath: "swagger"

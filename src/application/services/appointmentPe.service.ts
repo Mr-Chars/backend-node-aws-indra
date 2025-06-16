@@ -25,11 +25,6 @@ export class AppointmentPeService {
             await this.appointmentPeRepository.createAppointment(appointment);
             await this.eventBridgeService.publishAppointmentConfirmed(appointment.id);
             return appointment;
-        } catch (error) {
-            console.log('============');
-            console.log(error);
-            console.log('============');
-
-        }
+        } catch (error) {}
     }
 }

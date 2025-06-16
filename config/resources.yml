@@ -26,11 +26,6 @@ AppointmentCreatedTopicSns:
   Properties:
     TopicName: appointment-created-topic
 
-AppointmentConfirmTopicSns:
-  Type: AWS::SNS::Topic
-  Properties:
-    TopicName: appointment-confirm-topic
-
 AppointmentCreatedTopicSubscriptionPE:
   Type: AWS::SNS::Subscription
   Properties:
@@ -104,7 +99,7 @@ AppointmentQueueSqsPolicy:
 AppointmentConfirmBus:
   Type: AWS::Events::EventBus
   Properties:
-    Name: appointment-confirm-bus
+    Name: appointment-bus-event
 
 EventBridgeRule:
   Type: AWS::Events::Rule

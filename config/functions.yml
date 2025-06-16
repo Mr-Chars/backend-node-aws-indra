@@ -5,7 +5,7 @@ appointment:
         path: appointments
         method: post
         summary: "Crear cita médica"
-        description: "Endpoint para programar una nueva cita médica para un paciente asegurado"
+        description: "Endpoint para crear una cita."
         swaggerTags: ["Appointments"]
         bodyType: "AppointmentRequest"
         responseData:
@@ -28,7 +28,7 @@ appointment:
             description: "Lista de citas"
             bodyType: "AppointmentListResponse"
           404:
-            description: "No se han encontrado citas para esta asegurado"
+            description: "No se han encontrado citas"
           500:
             description: "Error interno del servidor"
         operationId: "getAppointmentsByInsuredId"

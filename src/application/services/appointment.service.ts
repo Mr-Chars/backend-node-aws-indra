@@ -17,22 +17,28 @@ export class AppointmentService {
         this.snsService = new SnsService();
     }
 
-    async create(data: CreateAppointmentDto): Promise<GetAppointmentResponseDto> {
-        Logger.info('=======> Running createAppointment');
-        const result = CreateAppointmentSchema.safeParse(data);
+    async create(data: CreateAppointmentDto): Promise<any> {
+        // Logger.info('=======> Running createAppointment');
+        try {
+            const result = CreateAppointmentSchema.safeParse(data);
 
-        if (!result.success) {
-            throw new CustomException("Datos inválidos", HTTP_STATUS_CODE.BAD_REQUEST, zodToCustomException(result.error));
-        }
+            if (!result.success) {
+                return {
+                    statusCode: HTTP_STATUS_CODE.BAD_REQUEST,
+                    name: "CustomException",
+                    errors: zodToCustomException(result.error),
+                }
+            }
 
-        const appointment = AppointmentMapper.toDomain(data);
-        const response = await this.appointmentRepository.createAppointment(appointment);
-        await this.snsService.publishAppointmentCreated(appointment);
-        return AppointmentMapper.entityToDto(response);
+            const appointment = AppointmentMapper.toDomain(data);
+            const response = await this.appointmentRepository.createAppointment(appointment);
+            await this.snsService.publishAppointmentCreated(appointment);
+            return AppointmentMapper.entityToDto(response);
+        } catch (error) { }
     }
 
     async update(appointmentId: string): Promise<any> {
-        Logger.info('=======> Running updateAppointment');
+        // Logger.info('=======> Running updateAppointment');
         if (!appointmentId) {
             throw new CustomException("appointmentId not found", HTTP_STATUS_CODE.BAD_REQUEST);
         }
@@ -40,7 +46,7 @@ export class AppointmentService {
     }
 
     async getByInsuredId(insuredId: string): Promise<any> {
-        Logger.info('=======> Running getAppointmentsByInsuredId');
+        // Logger.info('=======> Running getAppointmentsByInsuredId');
         if (!insuredId) {
             throw new CustomException("insuredId not found", HTTP_STATUS_CODE.BAD_REQUEST);
         }

@@ -29,7 +29,7 @@ El flujo del proyecto se basa en la comunicación de diversas tecnologías como 
 **Propósito:** `Crear una nueva cita en base a la información ingresada`
 **Método:** `POST`
 **URL:**  
-`https://20a8zb3aa0.execute-api.sa-east-1.amazonaws.com/dev/appointments`
+`https://2ah9wyzz0l.execute-api.sa-east-1.amazonaws.com/dev/appointments`
 
 **Body del request (formato JSON):**
 
@@ -62,10 +62,10 @@ El flujo del proyecto se basa en la comunicación de diversas tecnologías como 
 **Método:** `GET`
   
 **URL:**  
-`https://20a8zb3aa0.execute-api.sa-east-1.amazonaws.com/dev/appointments/{insuredId}`
+`https://2ah9wyzz0l.execute-api.sa-east-1.amazonaws.com/dev/appointments/{insuredId}`
 
 **Ejemplo:**  
-`https://20a8zb3aa0.execute-api.sa-east-1.amazonaws.com/dev/appointments/00007`
+`https://2ah9wyzz0l.execute-api.sa-east-1.amazonaws.com/dev/appointments/00007`
 
 **Respuesta esperada:**
 
@@ -104,15 +104,14 @@ El flujo del proyecto se basa en la comunicación de diversas tecnologías como 
 }
 ```
 
-### 3. Diagrama
-![Diagrama del reto](https://i.postimg.cc/gjj5NsCW/Sin-t-tulo.png)
+### 3. Arquitectura aws
+
+![Arquitectura del reto técnico](https://i.postimg.cc/T14g5zfG/arquitectura-aws.png)
 
 ## 4. Documentación Swagger
 
-Puedes acceder a la documentación completa de los endpoints a través de Swagger en el siguiente enlace:
-
-🔗 [Ver Documentación Swagger](https://k4nit9jt3h.execute-api.sa-east-1.amazonaws.com/dev/swagger)
+🔗 [Documentación en Swagger](https://i.postimg.cc/9X8Gk7TS/swagger.png)
 
 ## 5. Pruebas unitarias
-![Resultados del testing](https://i.postimg.cc/TYw8g2F4/testing.png)
+![Resultados del testing](https://i.postimg.cc/MKnyJpmG/test.png)
 

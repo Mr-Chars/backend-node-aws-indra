@@ -40,6 +40,10 @@ export class EventBridgeService implements AppointmentEventService {
                 throw new CustomException(`Error al publicar eventos`, HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR);
             }
         } catch (error) {
+            console.log('------------------------');
+            console.log(error);
+            console.log('------------------------');
+            
             Logger.error('Error al publicar en EventBridge:', error);
             throw new CustomException(`Error al publicar en EventBridge:`, HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR);
         }

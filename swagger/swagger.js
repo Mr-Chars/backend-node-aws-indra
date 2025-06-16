@@ -9,7 +9,7 @@
     "/appointments": {
       "post": {
         "summary": "Crear cita médica",
-        "description": "Endpoint para programar una nueva cita médica para un paciente asegurado",
+        "description": "Endpoint para crear una cita.",
         "tags": [
           "Appointments"
         ],
@@ -77,7 +77,7 @@
             }
           },
           "404": {
-            "description": "No se han encontrado citas para esta asegurado"
+            "description": "No se han encontrado citas"
           },
           "500": {
             "description": "Error interno del servidor"
@@ -86,10 +86,180 @@
       }
     }
   },
-  "definitions": {},
+  "definitions": {
+    "AppointmentRequest": {
+      "properties": {
+        "insuredId": {
+          "title": "AppointmentRequest.insuredId",
+          "type": "string"
+        },
+        "scheduleId": {
+          "title": "AppointmentRequest.scheduleId",
+          "type": "number"
+        },
+        "countryISO": {
+          "enum": [
+            "PE",
+            "CL"
+          ],
+          "title": "AppointmentRequest.countryISO",
+          "type": "string"
+        }
+      },
+      "required": [
+        "insuredId",
+        "scheduleId",
+        "countryISO"
+      ],
+      "additionalProperties": false,
+      "title": "AppointmentRequest",
+      "type": "object"
+    },
+    "AppointmentResponse": {
+      "properties": {
+        "success": {
+          "title": "AppointmentResponse.success",
+          "enum": [
+            true
+          ],
+          "type": "boolean"
+        },
+        "data": {
+          "properties": {
+            "id": {
+              "title": "AppointmentResponse.data.id",
+              "type": "string"
+            },
+            "insuredId": {
+              "title": "AppointmentResponse.data.insuredId",
+              "type": "string"
+            },
+            "scheduleId": {
+              "title": "AppointmentResponse.data.scheduleId",
+              "type": "number"
+            },
+            "countryISO": {
+              "enum": [
+                "PE",
+                "CL"
+              ],
+              "title": "AppointmentResponse.data.countryISO",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "PENDING",
+                "COMPLETED"
+              ],
+              "title": "AppointmentResponse.data.status",
+              "type": "string"
+            },
+            "createdAt": {
+              "title": "AppointmentResponse.data.createdAt",
+              "type": "string"
+            },
+            "updatedAt": {
+              "title": "AppointmentResponse.data.updatedAt",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "insuredId",
+            "scheduleId",
+            "countryISO",
+            "status",
+            "createdAt",
+            "updatedAt"
+          ],
+          "additionalProperties": false,
+          "title": "AppointmentResponse.data",
+          "type": "object"
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "AppointmentResponse",
+      "type": "object"
+    },
+    "AppointmentListResponse": {
+      "properties": {
+        "success": {
+          "title": "AppointmentListResponse.success",
+          "type": "boolean"
+        },
+        "data": {
+          "items": {
+            "properties": {
+              "id": {
+                "title": "AppointmentListResponse.data.[].id",
+                "type": "string"
+              },
+              "insuredId": {
+                "title": "AppointmentListResponse.data.[].insuredId",
+                "type": "string"
+              },
+              "scheduleId": {
+                "title": "AppointmentListResponse.data.[].scheduleId",
+                "type": "number"
+              },
+              "countryISO": {
+                "enum": [
+                  "PE",
+                  "CL"
+                ],
+                "title": "AppointmentListResponse.data.[].countryISO",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "PENDING",
+                  "COMPLETED"
+                ],
+                "title": "AppointmentListResponse.data.[].status",
+                "type": "string"
+              },
+              "createdAt": {
+                "title": "AppointmentListResponse.data.[].createdAt",
+                "type": "string"
+              },
+              "updatedAt": {
+                "title": "AppointmentListResponse.data.[].updatedAt",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "insuredId",
+              "scheduleId",
+              "countryISO",
+              "status",
+              "createdAt",
+              "updatedAt"
+            ],
+            "additionalProperties": false,
+            "title": "AppointmentListResponse.data.[]",
+            "type": "object"
+          },
+          "title": "AppointmentListResponse.data",
+          "type": "array"
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "AppointmentListResponse",
+      "type": "object"
+    }
+  },
   "securityDefinitions": {},
   "basePath": "/dev",
-  "host": "k4nit9jt3h.execute-api.sa-east-1.amazonaws.com",
+  "host": "2ah9wyzz0l.execute-api.sa-east-1.amazonaws.com",
   "schemes": [
     "https"
   ]

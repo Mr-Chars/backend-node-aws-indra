@@ -26,10 +26,6 @@ export class AppointmentClService {
             await this.appointmentClRepository.createAppointment(appointment);
             await this.eventBridgeService.publishAppointmentConfirmed(appointment.id);
             return appointment;
-        } catch (error) {
-            console.log('============ CL');
-            console.log(error);
-            console.log('============ CL');
-        }
+        } catch (error) { }
     }
 }

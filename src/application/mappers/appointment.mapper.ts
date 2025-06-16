@@ -28,7 +28,6 @@ export class AppointmentMapper {
             status: appointment.status,
             createdAt: appointment.createdAt,
             updatedAt: appointment.updatedAt,
-            schedule: appointment.schedule
         }
     }
 }
